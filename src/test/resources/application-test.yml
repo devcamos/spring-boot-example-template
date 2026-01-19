@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${TESTCONTAINERS_POSTGRES_HOST:localhost}:${TESTCONTAINERS_POSTGRES_PORT:5432}/${TESTCONTAINERS_POSTGRES_DB:testdb}
+    username: ${TESTCONTAINERS_POSTGRES_USER:test}
+    password: ${TESTCONTAINERS_POSTGRES_PASSWORD:test}
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  flyway:
+    enabled: false
+  kafka:
+    bootstrap-servers: ${spring.embedded.kafka.brokers:localhost:9092}
+
+logging:
+  level:
+    root: WARN
+    com.example.template: DEBUG

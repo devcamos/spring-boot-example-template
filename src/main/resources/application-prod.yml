@@ -1,0 +1,15 @@
+spring:
+  jpa:
+    show-sql: false
+  flyway:
+    enabled: true
+
+logging:
+  level:
+    root: WARN
+    com.example.template: INFO
+
+management:
+  endpoint:
+    health:
+      show-details: never
