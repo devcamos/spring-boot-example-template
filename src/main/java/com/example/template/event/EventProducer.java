@@ -35,7 +35,7 @@ public class EventProducer {
                 log.error("Unable to send event with key [{}] to topic [{}] due to: {}",
                         key, TOPIC, ex.getMessage(), ex);
                 // Send to DLQ
-                sendToDlq(event, ex);
+                sendToDlq(event, ex instanceof Exception ? (Exception) ex : new RuntimeException(ex));
             }
         });
     }

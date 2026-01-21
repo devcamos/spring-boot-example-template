@@ -16,7 +16,9 @@ Multiple independent services communicating via REST APIs and message queues.
 - **Message Queue**: Kafka for inter-service communication
 - **Database per Service**: Each service has its own database
 - **Centralized Logging**: ELK stack or similar
-- **Distributed Tracing**: OpenTelemetry across services
+- **Distributed Tracing**: OpenTelemetry across services with OTLP exporter
+- **Metrics Collection**: Prometheus scraping metrics from all services
+- **Metrics Visualization**: Grafana dashboards for unified observability
 
 ### How This Template Supports It
 
@@ -24,7 +26,7 @@ Multiple independent services communicating via REST APIs and message queues.
 - **Event-Driven Communication**: Kafka producers/consumers ready
 - **Correlation IDs**: Track requests across services
 - **Health Checks**: Actuator endpoints for service discovery
-- **Observability**: OpenTelemetry for distributed tracing
+- **Observability**: OpenTelemetry for distributed tracing, Prometheus for metrics, Grafana for visualization
 
 ### Extension Points
 

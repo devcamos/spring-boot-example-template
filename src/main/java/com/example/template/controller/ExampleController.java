@@ -6,18 +6,21 @@ import com.example.template.service.ExampleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/examples")
 @RequiredArgsConstructor
+@Validated
 @Tag(name = "Examples", description = "Example entity management API")
 public class ExampleController {
     
@@ -43,7 +46,7 @@ public class ExampleController {
     @GetMapping("/search")
     @Operation(summary = "Search examples")
     public ResponseEntity<PageResponse<ExampleEntity>> search(
-            @RequestParam String q,
+            @RequestParam @NotBlank(message = "Search term cannot be empty") String q,
             @PageableDefault(size = 20, sort = "id") Pageable pageable) {
         log.debug("GET /api/v1/examples/search?q={} with pagination: {}", q, pageable);
         PageResponse<ExampleEntity> response = service.search(q, pageable);

@@ -1,12 +1,16 @@
 package com.example.template.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.template.TestConstants;
 import com.example.template.entity.ExampleEntity;
 import com.example.template.service.ExampleService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -27,44 +30,55 @@ class ExampleControllerTest {
     @Autowired
     private MockMvc mockMvc;
     
-    @MockBean
+    @MockitoBean
     private ExampleService service;
     
-    @Autowired
     private ObjectMapper objectMapper;
+    
+    @BeforeEach
+    void setUp() {
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
     
     @Test
     void getById_WhenExists_ReturnsEntity() throws Exception {
         ExampleEntity entity = ExampleEntity.builder()
-                .id(1L)
+                .id(TestConstants.TEST_ENTITY_ID)
                 .name("Test Entity")
                 .description("Test Description")
-                .status("ACTIVE")
+                .status(TestConstants.STATUS_ACTIVE)
                 .build();
         
-        when(service.findById(1L)).thenReturn(entity);
+        when(service.findById(TestConstants.TEST_ENTITY_ID)).thenReturn(entity);
         
-        mockMvc.perform(get("/api/v1/examples/1"))
+        String url = TestConstants.URL_UNDER_TEST + "/" + TestConstants.TEST_ENTITY_ID;
+        mockMvc.perform(get(url))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("Test Entity"));
+                .andExpect(jsonPath(TestConstants.JSON_PATH_ID).value(TestConstants.TEST_ENTITY_ID.intValue()))
+                .andExpect(jsonPath(TestConstants.JSON_PATH_NAME).value("Test Entity"));
     }
     
     @Test
     void getAll_ReturnsPaginatedResponse() throws Exception {
         ExampleEntity entity = ExampleEntity.builder()
-                .id(1L)
+                .id(TestConstants.TEST_ENTITY_ID)
                 .name("Test Entity")
-                .status("ACTIVE")
+                .status(TestConstants.STATUS_ACTIVE)
                 .build();
         
-        Page<ExampleEntity> page = new PageImpl<>(List.of(entity), PageRequest.of(0, 20), 1);
+        Page<ExampleEntity> page = new PageImpl<>(
+                List.of(entity),
+                PageRequest.of(0, 20),
+                1
+        );
         when(service.findAll(any())).thenReturn(com.example.template.dto.PageResponse.of(page));
         
-        mockMvc.perform(get("/api/v1/examples"))
+        mockMvc.perform(get(TestConstants.URL_UNDER_TEST))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.totalElements").value(1));
+                .andExpect(jsonPath(TestConstants.JSON_PATH_CONTENT).isArray())
+                .andExpect(jsonPath(TestConstants.JSON_PATH_TOTAL_ELEMENTS).value(1));
     }
     
     @Test
@@ -72,23 +86,23 @@ class ExampleControllerTest {
         ExampleEntity entity = ExampleEntity.builder()
                 .name("New Entity")
                 .description("New Description")
-                .status("ACTIVE")
+                .status(TestConstants.STATUS_ACTIVE)
                 .build();
         
         ExampleEntity created = ExampleEntity.builder()
-                .id(1L)
+                .id(TestConstants.TEST_ENTITY_ID)
                 .name("New Entity")
                 .description("New Description")
-                .status("ACTIVE")
+                .status(TestConstants.STATUS_ACTIVE)
                 .build();
         
         when(service.create(any(ExampleEntity.class))).thenReturn(created);
         
-        mockMvc.perform(post("/api/v1/examples")
+        mockMvc.perform(post(TestConstants.URL_UNDER_TEST)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(entity)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("New Entity"));
+                .andExpect(jsonPath(TestConstants.JSON_PATH_ID).value(TestConstants.TEST_ENTITY_ID.intValue()))
+                .andExpect(jsonPath(TestConstants.JSON_PATH_NAME).value("New Entity"));
     }
 }
