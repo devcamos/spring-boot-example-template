@@ -1,16 +1,12 @@
 package com.example.template.integration;
 
 import com.example.template.TestConstants;
-import com.example.template.config.JpaConfig;
 import com.example.template.entity.ExampleEntity;
 import com.example.template.repository.ExampleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
-import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -28,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Testcontainers
 @ActiveProfiles("test")
-class ExampleIntegrationTest {
+class ExampleIT {
 
     @MockitoBean
     WebClient.Builder webClientBuilder;

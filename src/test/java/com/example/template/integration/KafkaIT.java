@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @SpringBootTest
 @Testcontainers
 @ActiveProfiles("test")
-class KafkaIntegrationTest {
+class KafkaIT {
 
     @Container
     static KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.5.0"))
