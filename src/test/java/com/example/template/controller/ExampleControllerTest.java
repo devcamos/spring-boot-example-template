@@ -105,4 +105,80 @@ class ExampleControllerTest {
                 .andExpect(jsonPath(TestConstants.JSON_PATH_ID).value(TestConstants.TEST_ENTITY_ID.intValue()))
                 .andExpect(jsonPath(TestConstants.JSON_PATH_NAME).value("New Entity"));
     }
+
+    @Test
+    void search_WhenValid_ReturnsPaginatedResponse() throws Exception {
+        ExampleEntity entity = ExampleEntity.builder()
+                .id(TestConstants.TEST_ENTITY_ID)
+                .name("Test Entity")
+                .status(TestConstants.STATUS_ACTIVE)
+                .build();
+        
+        Page<ExampleEntity> page = new PageImpl<>(
+                List.of(entity),
+                PageRequest.of(0, 20),
+                1
+        );
+        when(service.search(any(), any())).thenReturn(com.example.template.dto.PageResponse.of(page));
+        
+        mockMvc.perform(get(TestConstants.URL_UNDER_TEST + "/search")
+                        .param("q", "test"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(TestConstants.JSON_PATH_CONTENT).isArray())
+                .andExpect(jsonPath(TestConstants.JSON_PATH_TOTAL_ELEMENTS).value(1));
+    }
+
+    @Test
+    void getByStatus_WhenValid_ReturnsPaginatedResponse() throws Exception {
+        ExampleEntity entity = ExampleEntity.builder()
+                .id(TestConstants.TEST_ENTITY_ID)
+                .name("Test Entity")
+                .status(TestConstants.STATUS_ACTIVE)
+                .build();
+        
+        Page<ExampleEntity> page = new PageImpl<>(
+                List.of(entity),
+                PageRequest.of(0, 20),
+                1
+        );
+        when(service.findByStatus(any(), any())).thenReturn(com.example.template.dto.PageResponse.of(page));
+        
+        mockMvc.perform(get(TestConstants.URL_UNDER_TEST + "/status/" + TestConstants.STATUS_ACTIVE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(TestConstants.JSON_PATH_CONTENT).isArray())
+                .andExpect(jsonPath(TestConstants.JSON_PATH_TOTAL_ELEMENTS).value(1));
+    }
+
+    @Test
+    void update_WhenValid_ReturnsUpdatedEntity() throws Exception {
+        ExampleEntity entity = ExampleEntity.builder()
+                .name("Updated Entity")
+                .description("Updated Description")
+                .status(TestConstants.STATUS_ACTIVE)
+                .build();
+        
+        ExampleEntity updated = ExampleEntity.builder()
+                .id(TestConstants.TEST_ENTITY_ID)
+                .name("Updated Entity")
+                .description("Updated Description")
+                .status(TestConstants.STATUS_ACTIVE)
+                .build();
+        
+        when(service.update(any(Long.class), any(ExampleEntity.class))).thenReturn(updated);
+        
+        String url = TestConstants.URL_UNDER_TEST + "/" + TestConstants.TEST_ENTITY_ID;
+        mockMvc.perform(put(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(entity)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(TestConstants.JSON_PATH_ID).value(TestConstants.TEST_ENTITY_ID.intValue()))
+                .andExpect(jsonPath(TestConstants.JSON_PATH_NAME).value("Updated Entity"));
+    }
+
+    @Test
+    void delete_WhenExists_ReturnsNoContent() throws Exception {
+        String url = TestConstants.URL_UNDER_TEST + "/" + TestConstants.TEST_ENTITY_ID;
+        mockMvc.perform(delete(url))
+                .andExpect(status().isNoContent());
+    }
 }
