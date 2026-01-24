@@ -25,7 +25,7 @@
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <testcontainers.version>1.21.4</testcontainers.version>
-        <springdoc.version>2.6.0</springdoc.version>
+        <springdoc.version>3.0.1</springdoc.version>
     </properties>
 
     <dependencyManagement>
