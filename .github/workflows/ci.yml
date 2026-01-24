@@ -29,7 +29,7 @@ jobs:
         run: ./mvnw -ntp verify
       
       - name: Upload coverage reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-report
           path: target/site/jacoco/
@@ -98,7 +98,7 @@ jobs:
           cache-to: type=gha,mode=max
       
       - name: Upload JAR artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: application-jar
           path: target/*.jar
