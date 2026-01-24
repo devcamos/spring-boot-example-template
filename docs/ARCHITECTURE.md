@@ -67,10 +67,30 @@ The Spring Boot Example Template follows a layered architecture pattern with cle
 
 ## Observability
 
-- **Metrics**: Prometheus format via Actuator
-- **Tracing**: OpenTelemetry distributed tracing
+- **Metrics**: Prometheus format via Actuator, scraped by Prometheus
+- **Metrics Visualization**: Grafana dashboards for metrics visualization
+- **Tracing**: OpenTelemetry distributed tracing with OTLP exporter
+- **Tracing Bridge**: Micrometer tracing bridge for OpenTelemetry integration
+- **Metrics Export**: Micrometer OTLP registry for metrics export
 - **Logging**: Structured JSON logging (production)
 - **Correlation IDs**: Request tracing across services
+
+### Observability Stack
+
+The observability stack includes:
+
+1. **Spring Boot Actuator**: Exposes metrics endpoints (`/actuator/prometheus`)
+2. **Prometheus**: Time-series database that scrapes metrics from the application
+3. **Grafana**: Visualization platform that queries Prometheus for dashboards
+4. **OpenTelemetry**: Distributed tracing with OTLP exporter for trace export
+5. **Micrometer**: Metrics collection and export (Prometheus, OTLP)
+6. **Structured Logging**: JSON-formatted logs with correlation IDs
+
+### Access Points
+
+- **Prometheus UI**: http://localhost:9090
+- **Grafana UI**: http://localhost:3000 (admin/admin)
+- **Actuator Endpoints**: http://localhost:8080/actuator
 
 ## Testing Strategy
 

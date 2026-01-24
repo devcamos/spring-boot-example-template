@@ -1,5 +1,6 @@
 package com.example.template.service;
 
+import com.example.template.TestConstants;
 import com.example.template.entity.ExampleEntity;
 import com.example.template.exception.BadRequestException;
 import com.example.template.exception.ConflictException;
@@ -38,30 +39,30 @@ class ExampleServiceTest {
     @BeforeEach
     void setUp() {
         entity = ExampleEntity.builder()
-                .id(1L)
+                .id(TestConstants.TEST_ENTITY_ID)
                 .name("Test Entity")
                 .description("Test Description")
-                .status("ACTIVE")
+                .status(TestConstants.STATUS_ACTIVE)
                 .build();
     }
     
     @Test
     void findById_WhenExists_ReturnsEntity() {
-        when(repository.findById(1L)).thenReturn(Optional.of(entity));
+        when(repository.findById(TestConstants.TEST_ENTITY_ID)).thenReturn(Optional.of(entity));
         
-        ExampleEntity result = service.findById(1L);
+        ExampleEntity result = service.findById(TestConstants.TEST_ENTITY_ID);
         
         assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getId()).isEqualTo(TestConstants.TEST_ENTITY_ID);
         assertThat(result.getName()).isEqualTo("Test Entity");
-        verify(repository).findById(1L);
+        verify(repository).findById(TestConstants.TEST_ENTITY_ID);
     }
     
     @Test
     void findById_WhenNotExists_ThrowsNotFoundException() {
-        when(repository.findById(1L)).thenReturn(Optional.empty());
+        when(repository.findById(TestConstants.TEST_ENTITY_ID)).thenReturn(Optional.empty());
         
-        assertThatThrownBy(() -> service.findById(1L))
+        assertThatThrownBy(() -> service.findById(TestConstants.TEST_ENTITY_ID))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("not found");
     }
@@ -98,30 +99,30 @@ class ExampleServiceTest {
     
     @Test
     void update_WhenExists_ReturnsUpdatedEntity() {
-        when(repository.findById(1L)).thenReturn(Optional.of(entity));
+        when(repository.findById(TestConstants.TEST_ENTITY_ID)).thenReturn(Optional.of(entity));
         when(repository.save(any(ExampleEntity.class))).thenReturn(entity);
         
         ExampleEntity updated = ExampleEntity.builder()
                 .name("Updated Name")
                 .description("Updated Description")
-                .status("INACTIVE")
+                .status(TestConstants.STATUS_INACTIVE)
                 .build();
         
-        ExampleEntity result = service.update(1L, updated);
+        ExampleEntity result = service.update(TestConstants.TEST_ENTITY_ID, updated);
         
         assertThat(result).isNotNull();
-        verify(repository).findById(1L);
+        verify(repository).findById(TestConstants.TEST_ENTITY_ID);
         verify(repository).save(any(ExampleEntity.class));
     }
     
     @Test
     void delete_WhenExists_DeletesEntity() {
-        when(repository.findById(1L)).thenReturn(Optional.of(entity));
+        when(repository.findById(TestConstants.TEST_ENTITY_ID)).thenReturn(Optional.of(entity));
         doNothing().when(repository).delete(entity);
         
-        service.delete(1L);
+        service.delete(TestConstants.TEST_ENTITY_ID);
         
-        verify(repository).findById(1L);
+        verify(repository).findById(TestConstants.TEST_ENTITY_ID);
         verify(repository).delete(entity);
     }
 }
