@@ -85,7 +85,7 @@ jobs:
         run: ./mvnw -ntp clean package -DskipTests -DskipITs=true
       
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       
       - name: Build Docker image (cached)
         uses: docker/build-push-action@v6
